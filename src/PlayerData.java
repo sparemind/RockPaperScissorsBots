@@ -116,6 +116,20 @@ public class PlayerData implements Comparable<PlayerData> {
         private int draws;
         private int total;
 
+        Record() {
+            this.wins = 0;
+            this.losses = 0;
+            this.draws = 0;
+            this.total = 0;
+        }
+
+        Record(Record other) {
+            this.wins = other.wins;
+            this.losses = other.losses;
+            this.draws = other.draws;
+            this.total = other.total;
+        }
+
         public void addWin() {
             this.wins++;
             this.total++;
@@ -129,6 +143,22 @@ public class PlayerData implements Comparable<PlayerData> {
         public void addDraw() {
             this.draws++;
             this.total++;
+        }
+
+        public int getWins() {
+            return this.wins;
+        }
+
+        public int getDraws() {
+            return this.draws;
+        }
+
+        public int getLosses() {
+            return this.losses;
+        }
+
+        public int getTotal() {
+            return this.total;
         }
 
         /**

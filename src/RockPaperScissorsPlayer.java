@@ -20,7 +20,8 @@ public class RockPaperScissorsPlayer {
     }
 
     /**
-     * Called when a training session starts.
+     * Loads data saved from previous training session game. Called when a
+     * training session starts.
      *
      * @param data The data from the previous training session game.
      */
@@ -29,11 +30,14 @@ public class RockPaperScissorsPlayer {
     }
 
     /**
-     * Called when a training session ends.
+     * Saves data to use in next training session game. Called when a training
+     * session ends.
      *
+     * @param record This player's win/loss/draw record for the training session
+     *               game.
      * @return The data to send to the next training session game.
      */
-    Object[] trainingEnd() {
+    Object[] trainingEnd(PlayerData.Record record) {
         return null;
     }
 }

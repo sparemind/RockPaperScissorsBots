@@ -135,8 +135,11 @@ public class TournamentManager {
 
         // Save data if in training mode
         if (training) {
-            player1Data.setTrainingData(player1.trainingEnd());
-            player2Data.setTrainingData(player2.trainingEnd());
+            // Give a copy of the players' records so they can't edit them
+            PlayerData.Record p1DataCopy = new PlayerData.Record(player1Data.getRoundsRecord());
+            PlayerData.Record p2DataCopy = new PlayerData.Record(player2Data.getRoundsRecord());
+            player1Data.setTrainingData(player1.trainingEnd(p1DataCopy));
+            player2Data.setTrainingData(player2.trainingEnd(p2DataCopy));
         }
 
         // Update game records based on game results
