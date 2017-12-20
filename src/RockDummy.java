@@ -1,11 +1,11 @@
 import java.util.List;
 
 /**
- * Always plays paper.
+ * Always plays rock.
  */
-public class PaperBot extends RockPaperScissorsPlayer {
+public class RockDummy extends RockPaperScissorsPlayer {
     @Override
     public Move makeMove(List<Move> previousMoves) {
-        return Move.PAPER;
+        return Move.ROCK;
     }
 }
