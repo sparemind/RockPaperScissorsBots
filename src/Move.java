@@ -1,3 +1,7 @@
+/**
+ * Represents a move that a player can make, one of: Rock, Paper, Scissors.
+ * Paper beats rock, scissors beats paper, and rock beats scissors.
+ */
 public enum Move {
     ROCK(0), PAPER(1), SCISSORS(2);
 
@@ -5,6 +9,15 @@ public enum Move {
 
     Move(int value) {
         this.value = value;
+    }
+
+    /**
+     * Returns a random move.
+     *
+     * @return A random move.
+     */
+    public static Move random() {
+        return values()[(int) (Math.random() * values().length)];
     }
 
     /**
@@ -28,20 +41,29 @@ public enum Move {
     }
 
     /**
+     * Returns an integer result representing whether this move wins/loses/draws
+     * against the other move.
+     *
+     * @param other The other move to check against.
+     * @return 0 if it's a draw, 1 if this move beats the other move, -1 if this
+     * move loses.
+     */
+    public int versus(Move other) {
+        if (this == other) {
+            return 0;
+        } else if (beats(other)) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+
+    /**
      * Returns the move that beats this move.
      *
      * @return The move that beats this move.
      */
     public Move getCounter() {
-        return this.values()[(this.value + 1) % this.values().length];
-    }
-
-    /**
-     * Returns a random move.
-     *
-     * @return A random move.
-     */
-    public static Move random() {
-        return values()[(int) (Math.random() * values().length)];
+        return values()[(this.value + 1) % values().length];
     }
 }

@@ -15,11 +15,10 @@ public class PlayerData implements Comparable<PlayerData> {
      *
      * @param player The player whose data will be stored.
      */
-    public PlayerData(Class<? extends RockPaperScissorsBot> player) {
+    public PlayerData(Class<? extends RockPaperScissorsPlayer> player) {
         this.name = player.getName();
         this.constructor = player.getConstructors()[0];
-        resetRoundsRecord();
-        resetGamesRecord();
+        resetRecords();
     }
 
     /**
@@ -32,6 +31,15 @@ public class PlayerData implements Comparable<PlayerData> {
     }
 
     /**
+     * Returns the name of this data's player.
+     *
+     * @return The name of this data's player.
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
      * Returns this player's game win/loss/draw totals.
      *
      * @return The game win/loss/draw records for this player.
@@ -41,16 +49,10 @@ public class PlayerData implements Comparable<PlayerData> {
     }
 
     /**
-     * Resets this player's round win/loss/draw totals.
+     * Resets all of this player's win/loss/draw totals for rounds and games
      */
-    public void resetRoundsRecord() {
+    public void resetRecords() {
         this.roundsRecord = new Record();
-    }
-
-    /**
-     * Resets this player's game win/loss/draw totals.
-     */
-    public void resetGamesRecord() {
         this.gamesRecord = new Record();
     }
 
@@ -60,13 +62,14 @@ public class PlayerData implements Comparable<PlayerData> {
      * @return A new instance of the player whose data is being stored.
      * @throws Exception If a new player instance cannot be created.
      */
-    public RockPaperScissorsBot newInstance() throws Exception {
-        return (RockPaperScissorsBot) this.constructor.newInstance();
+    public RockPaperScissorsPlayer newInstance() throws Exception {
+        return (RockPaperScissorsPlayer) this.constructor.newInstance();
     }
 
     /**
      * Returns a comparison value such that PlayerData will be sorted in order
-     * of descending number of rounds won.
+     * of descending number of games won first, number of rounds won second, and
+     * alphabetically by name third.
      *
      * @param other The data to compare this data to.
      * @return Negative if this should come before other, positive if this
@@ -74,16 +77,53 @@ public class PlayerData implements Comparable<PlayerData> {
      */
     @Override
     public int compareTo(PlayerData other) {
-        return other.roundsRecord.wins - this.roundsRecord.wins;
+        int result = other.gamesRecord.wins - this.gamesRecord.wins;
+        if (result == 0) {
+            result = other.roundsRecord.wins - this.roundsRecord.wins;
+        }
+        if (result == 0) {
+            result = this.name.compareTo(other.name);
+        }
+        return result;
     }
 
     /**
      * Stores totals for win/loss/draw data.
      */
-    private static class Record {
-        public int wins;
-        public int losses;
-        public int draws;
-        public int total;
+    public static class Record {
+        private int wins;
+        private int losses;
+        private int draws;
+        private int total;
+
+        public void addWin() {
+            this.wins++;
+            this.total++;
+        }
+
+        public void addLoss() {
+            this.losses++;
+            this.total++;
+        }
+
+        public void addDraw() {
+            this.draws++;
+            this.total++;
+        }
+
+        /**
+         * Returns a string containing the fractions of wins and percent of wins
+         * (no decimals).
+         *
+         * @return A string of the fraction of wins and the percent of wins (no
+         * decimals).
+         */
+        @Override
+        public String toString() {
+            int percent = (int) (100.0 * this.wins / this.total);
+            String fraction = this.wins + "/" + this.total;
+
+            return fraction + " (" + percent + "%)";
+        }
     }
 }
