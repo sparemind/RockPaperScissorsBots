@@ -122,7 +122,13 @@ public class PlayerData implements Comparable<PlayerData> {
         public String toString() {
             double percent = 100.0 * this.wins / this.total;
             percent = (int) (10.0 * percent) / 10.0;
-            String fraction = this.wins + "/" + this.total;
+
+            int length = ("" + this.total).length();
+            String wins = "" + this.wins;
+            while (wins.length() < length) {
+                wins = " " + wins;
+            }
+            String fraction = wins + "/" + this.total;
 
             return fraction + " (" + percent + "%)";
         }
