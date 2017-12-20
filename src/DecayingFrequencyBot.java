@@ -9,9 +9,12 @@ public class DecayingFrequencyBot extends RockPaperScissorsPlayer {
     private static final double CHANGE = 0.1;
 
     private double[] scores;
+    private TrainingData[] trainingData;
+    private int trainingID;
 
     public DecayingFrequencyBot() {
         this.scores = new double[Move.values().length];
+        this.trainingID = -1;
     }
 
     @Override
@@ -40,5 +43,49 @@ public class DecayingFrequencyBot extends RockPaperScissorsPlayer {
 
         // Play the counter to that move
         return Move.values()[indexOfMost];
+    }
+
+    @Override
+    Object[] trainingInit(Object[] data) {
+        // Initialize shared data array if it isn't already
+        if (data == null) {
+            data = new TrainingData[2];
+
+            for (int i = 0; i < data.length; i++) {
+                data[i] = new TrainingData();
+            }
+        }
+        this.trainingData = (TrainingData[]) data;
+
+        // Get the ID of this bot instance and load data
+        for (int i = 0; i < this.trainingData.length; i++) {
+            if (!this.trainingData[i].taken) {
+                this.trainingData[i].taken = true;
+                this.trainingID = i;
+                break;
+            }
+        }
+
+        return this.trainingData;
+    }
+
+    @Override
+    Object[] trainingEnd(PlayerData.Record record) {
+        // Save results of this bot instance
+        this.trainingData[this.trainingID] = new TrainingData();
+
+        return this.trainingData;
+    }
+
+    private static class TrainingData {
+        public boolean taken;
+        public double wins;
+        public double decayValue;
+
+        public TrainingData() {
+            this.taken = false;
+            this.wins = 0;
+            this.decayValue = 0.9;
+        }
     }
 }
