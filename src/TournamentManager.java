@@ -32,12 +32,16 @@ public class TournamentManager {
      * plays a match against every other player. A match consists of the given
      * number of games, with each game lasting the given number of rounds.
      *
-     * @param rounds The number of rounds to play per game.
-     * @param games  The number of games to play per match between two players.
+     * @param rounds   The number of rounds to play per game.
+     * @param games    The number of games to play per match between two
+     *                 players.
+     * @param training Whether the tournament should be run in training mode
+     *                 where players have the ability to save and load data
+     *                 between games.
      * @throws IllegalStateException If fewer than 2 players have been added to
      *                               the tournament.
      */
-    public void runTournament(int rounds, int games) {
+    public void runTournament(int rounds, int games, boolean training) {
         if (this.players.size() < 2) {
             throw new IllegalStateException("At least 2 players must be added to be able to run a tournament.");
         }
@@ -57,7 +61,7 @@ public class TournamentManager {
                 if (i != j) {
                     // Play the given number of games
                     for (int game = 0; game < games; game++) {
-                        playGame(this.players.get(i), this.players.get(j), rounds);
+                        playGame(this.players.get(i), this.players.get(j), rounds, training);
                     }
                 }
             }
@@ -74,14 +78,23 @@ public class TournamentManager {
      * @param player1Data The first player.
      * @param player2Data The second player.
      * @param rounds      The number of rounds the game should last.
+     * @param training    Whether this should be a training game, where players
+     *                    have the ability to save and load data that will be
+     *                    persistent between games.
      */
-    private void playGame(PlayerData player1Data, PlayerData player2Data, int rounds) {
+    private void playGame(PlayerData player1Data, PlayerData player2Data, int rounds, boolean training) {
         RockPaperScissorsPlayer player1 = initializePlayer(player1Data);
         RockPaperScissorsPlayer player2 = initializePlayer(player2Data);
 
         // If a player could not be initialized, end the game
         if (handleDisqualifications(player1, player2, player1Data, player2Data)) {
             return;
+        }
+
+        // Load data if in training mode
+        if (training) {
+            player1.trainingInit(player1Data.getTrainingData());
+            player2.trainingInit(player2Data.getTrainingData());
         }
 
         List<Move> player1Moves = new ArrayList<>();
@@ -94,6 +107,7 @@ public class TournamentManager {
             Move player1Move = getMove(player1, player2Moves);
             Move player2Move = getMove(player2, player1Moves);
 
+            // If a player fails to return a valid move, end the game
             if (handleDisqualifications(player1Move, player2Move, player1Data, player2Data)) {
                 return;
             }
@@ -117,6 +131,12 @@ public class TournamentManager {
                 player1Data.getRoundsRecord().addLoss();
                 player2Data.getRoundsRecord().addWin();
             }
+        }
+
+        // Save data if in training mode
+        if (training) {
+            player1Data.setTrainingData(player1.trainingEnd());
+            player2Data.setTrainingData(player2.trainingEnd());
         }
 
         // Update game records based on game results
@@ -211,7 +231,9 @@ public class TournamentManager {
 
     /**
      * Checks whether a player should be disqualified and updates the game
-     * win/loss records of both players accordingly.
+     * win/loss records of both players accordingly. If a player is
+     * disqualified, they are given a game loss. If a player isn't disqualified,
+     * but their opponent is, they are given a game win.
      *
      * @param player1     The player 1 value to check. If null, player 1 is
      *                    considered disqualified.

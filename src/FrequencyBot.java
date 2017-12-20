@@ -3,7 +3,7 @@ import java.util.List;
 /**
  * Plays the counter to the opponent's most frequent move.
  */
-public class FrequencyBot implements RockPaperScissorsPlayer {
+public class FrequencyBot extends RockPaperScissorsPlayer {
     private int[] counts;
 
     public FrequencyBot() {

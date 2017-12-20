@@ -8,6 +8,7 @@ public class PlayerData implements Comparable<PlayerData> {
     private Constructor<?> constructor;
     private Record roundsRecord;
     private Record gamesRecord;
+    private Object[] trainingData;
 
     /**
      * Initializes statistics tracking for a given player and links them to this
@@ -85,6 +86,25 @@ public class PlayerData implements Comparable<PlayerData> {
             result = this.name.compareTo(other.name);
         }
         return result;
+    }
+
+    /**
+     * Returns the stored training data from the last saved training session
+     * game.
+     *
+     * @return The training data from the last saved training session game.
+     */
+    public Object[] getTrainingData() {
+        return this.trainingData;
+    }
+
+    /**
+     * Save the training session data from a game for later recall.
+     *
+     * @param data The training session game data to save.
+     */
+    public void setTrainingData(Object[] data) {
+        this.trainingData = data;
     }
 
     /**

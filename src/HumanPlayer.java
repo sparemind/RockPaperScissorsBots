@@ -10,7 +10,7 @@ import java.util.Scanner;
  * begins with a +, -, or 0, corresponding to having won, lost, or drawn the
  * previous round.
  */
-public class HumanPlayer implements RockPaperScissorsPlayer {
+public class HumanPlayer extends RockPaperScissorsPlayer {
     private static final int HISTORY_LENGTH = 20;
 
     private Scanner console;
