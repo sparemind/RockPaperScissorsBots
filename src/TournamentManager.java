@@ -44,6 +44,12 @@ public class TournamentManager {
 
         resetPlayerData();
 
+        System.out.println("Playing tournament with:");
+        System.out.println("\t" + rounds + " round long games");
+        System.out.println("\t" + games + " game long matches");
+        System.out.println("\t" + this.players.size() + " competitors");
+        System.out.println();
+
         // Have every player play a match against every other player
         for (int i = 0; i < this.players.size(); i++) {
             for (int j = i; j < this.players.size(); j++) {
