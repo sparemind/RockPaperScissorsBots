@@ -113,14 +113,15 @@ public class PlayerData implements Comparable<PlayerData> {
 
         /**
          * Returns a string containing the fractions of wins and percent of wins
-         * (no decimals).
+         * to 1 decimal place.
          *
-         * @return A string of the fraction of wins and the percent of wins (no
-         * decimals).
+         * @return A string of the fraction of wins and the percent of wins (to
+         * 1 decimal place).
          */
         @Override
         public String toString() {
-            int percent = (int) (100.0 * this.wins / this.total);
+            double percent = 100.0 * this.wins / this.total;
+            percent = (int) (10.0 * percent) / 10.0;
             String fraction = this.wins + "/" + this.total;
 
             return fraction + " (" + percent + "%)";

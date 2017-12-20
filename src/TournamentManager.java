@@ -1,10 +1,14 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Manages a tournament between rock-paper-scissors players.
  */
 public class TournamentManager {
+    // Number of spaces between output columns
+    private static final int COLUMN_SPACING = 3;
+
     private List<PlayerData> players;
 
     /**
@@ -53,11 +57,7 @@ public class TournamentManager {
             }
         }
 
-        for (PlayerData playerData : this.players) {
-            System.out.print(playerData.getName() + "\t");
-            System.out.print(playerData.getGamesRecord() + "\t");
-            System.out.println(playerData.getRoundsRecord());
-        }
+        printRankings();
     }
 
     /**
@@ -129,6 +129,40 @@ public class TournamentManager {
         } else {
             player1Data.getGamesRecord().addDraw();
             player2Data.getGamesRecord().addDraw();
+        }
+    }
+
+    /**
+     * Prints player rankings in column form, displaying the number of games and
+     * rounds won for each player as a fraction and percentage. Players are
+     * ordered in descending order determined first by number of games won, then
+     * by number of rounds won, then alphabetically by name.
+     */
+    private void printRankings() {
+        Collections.sort(this.players);
+        int nameLength = "Name".length();
+        int gameLength = "Games Won".length();
+        int roundLength = "Rounds Won".length();
+        for (PlayerData playerData : this.players) {
+            nameLength = Math.max(nameLength, playerData.getName().length());
+            gameLength = Math.max(gameLength, playerData.getGamesRecord().toString().length());
+            roundLength = Math.max(roundLength, playerData.getRoundsRecord().toString().length());
+        }
+        nameLength += COLUMN_SPACING;
+        gameLength += COLUMN_SPACING;
+        roundLength += COLUMN_SPACING;
+
+        System.out.printf("%-" + nameLength + "s", "Name");
+        System.out.printf("%-" + gameLength + "s", "Games Won");
+        System.out.println("Rounds Won");
+        for (int i = 0; i < nameLength + gameLength + roundLength; i++) {
+            System.out.print("=");
+        }
+        System.out.println();
+        for (PlayerData playerData : this.players) {
+            System.out.printf("%-" + nameLength + "s", playerData.getName());
+            System.out.printf("%-" + gameLength + "s", playerData.getGamesRecord());
+            System.out.println(playerData.getRoundsRecord());
         }
     }
 
