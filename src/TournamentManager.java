@@ -80,17 +80,7 @@ public class TournamentManager {
         RockPaperScissorsPlayer player2 = initializePlayer(player2Data);
 
         // If a player could not be initialized, end the game
-        if (player1 == null || player2 == null) {
-            if (player1 == null) {
-                player1Data.getGamesRecord().addLoss();
-            } else {
-                player1Data.getGamesRecord().addWin();
-            }
-            if (player2 == null) {
-                player2Data.getGamesRecord().addLoss();
-            } else {
-                player2Data.getGamesRecord().addWin();
-            }
+        if (handleDisqualifications(player1, player2, player1Data, player2Data)) {
             return;
         }
 
@@ -101,8 +91,12 @@ public class TournamentManager {
 
         // Play the given number of rounds
         for (int round = 0; round < rounds; round++) {
-            Move player1Move = player1.makeMove(player2Moves);
-            Move player2Move = player2.makeMove(player1Moves);
+            Move player1Move = getMove(player1, player2Moves);
+            Move player2Move = getMove(player2, player1Moves);
+
+            if (handleDisqualifications(player1Move, player2Move, player1Data, player2Data)) {
+                return;
+            }
 
             player1Moves.add(player1Move);
             player2Moves.add(player2Move);
@@ -177,8 +171,8 @@ public class TournamentManager {
      * be initialized, prints error message and stack trace.
      *
      * @param playerData The player to get a new instance of.
-     * @return A new instance of the given player. Returns null if the player
-     * cannot be initialized.
+     * @return A new instance of the given player. Null if the player cannot be
+     * initialized.
      */
     private RockPaperScissorsPlayer initializePlayer(PlayerData playerData) {
         RockPaperScissorsPlayer player = null;
@@ -186,11 +180,62 @@ public class TournamentManager {
         try {
             player = playerData.newInstance();
         } catch (Exception e) {
-            System.err.println(playerData.getName() + " threw exception during initialization.");
+            System.err.println(playerData.getName() + " threw exception during initialization, game forfeited.");
             e.printStackTrace();
         }
 
         return player;
+    }
+
+    /**
+     * Attempts to get the given player's next move. If the player fails to
+     * return a valid move or throws an exception, prints error message and
+     * stack trace if available.
+     *
+     * @param player The player to get a move from.
+     * @return The next move made by the given player. Null if the player throws
+     * an exception.
+     */
+    private Move getMove(RockPaperScissorsPlayer player, List<Move> previousMoves) {
+        Move move = null;
+
+        try {
+            move = player.makeMove(previousMoves);
+        } catch (Exception e) {
+            System.err.println(player.getClass().getName() + " threw exception during move, game forfeited.");
+            e.printStackTrace();
+        }
+
+        return move;
+    }
+
+    /**
+     * Checks whether a player should be disqualified and updates the game
+     * win/loss records of both players accordingly.
+     *
+     * @param player1     The player 1 value to check. If null, player 1 is
+     *                    considered disqualified.
+     * @param player2     The player 2 value to check. If null, player 2 is
+     *                    considered disqualified.
+     * @param player1Data The game data of player 1.
+     * @param player2Data The game data of player 2.
+     * @return True if a player has been disqualified, false otherwise.
+     */
+    private boolean handleDisqualifications(Object player1, Object player2, PlayerData player1Data, PlayerData player2Data) {
+        if (player1 == null || player2 == null) {
+            if (player1 == null) {
+                player1Data.getGamesRecord().addLoss();
+            } else {
+                player1Data.getGamesRecord().addWin();
+            }
+            if (player2 == null) {
+                player2Data.getGamesRecord().addLoss();
+            } else {
+                player2Data.getGamesRecord().addWin();
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
