@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Manages a tournament between rock-paper-scissors players.
@@ -10,12 +12,14 @@ public class TournamentManager {
     private static final int COLUMN_SPACING = 3;
 
     private List<PlayerData> players;
+    private Map<Class<? extends RockPaperScissorsPlayer>, Object[]> trainingData;
 
     /**
      * Initializes a new tournament with no players.
      */
     public TournamentManager() {
         this.players = new ArrayList<>();
+        this.trainingData = new HashMap<>();
     }
 
     /**
@@ -25,6 +29,7 @@ public class TournamentManager {
      */
     public void add(Class<? extends RockPaperScissorsPlayer> newPlayer) {
         this.players.add(new PlayerData(newPlayer));
+        this.trainingData.put(newPlayer, null);
     }
 
     /**
@@ -93,8 +98,10 @@ public class TournamentManager {
 
         // Load data if in training mode
         if (training) {
-            player1.trainingInit(player1Data.getTrainingData());
-            player2.trainingInit(player2Data.getTrainingData());
+            Object[] p1TrainingData = player1.trainingInit(this.trainingData.get(player1.getClass()));
+            this.trainingData.put(player1.getClass(), p1TrainingData);
+            Object[] p2TrainingData = player2.trainingInit(this.trainingData.get(player2.getClass()));
+            this.trainingData.put(player2.getClass(), p2TrainingData);
         }
 
         List<Move> player1Moves = new ArrayList<>();
@@ -137,9 +144,9 @@ public class TournamentManager {
         if (training) {
             // Give a copy of the players' records so they can't edit them
             PlayerData.Record p1DataCopy = new PlayerData.Record(player1Data.getRoundsRecord());
+            this.trainingData.put(player1.getClass(), player1.trainingEnd(p1DataCopy));
             PlayerData.Record p2DataCopy = new PlayerData.Record(player2Data.getRoundsRecord());
-            player1Data.setTrainingData(player1.trainingEnd(p1DataCopy));
-            player2Data.setTrainingData(player2.trainingEnd(p2DataCopy));
+            this.trainingData.put(player2.getClass(), player2.trainingEnd(p2DataCopy));
         }
 
         // Update game records based on game results

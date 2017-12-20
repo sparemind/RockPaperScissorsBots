@@ -23,10 +23,14 @@ public class RockPaperScissorsPlayer {
      * Loads data saved from previous training session game. Called when a
      * training session starts.
      *
-     * @param data The data from the previous training session game.
+     * @param data The data from the previous training session game. Will be
+     *             null if this game is the first being played by this player
+     *             class in this tournament.
+     * @return The data to send to this player's opponent, if the opponent is
+     * another player of this player class.
      */
-    void trainingInit(Object[] data) {
-
+    Object[] trainingInit(Object[] data) {
+        return data;
     }
 
     /**
@@ -35,7 +39,8 @@ public class RockPaperScissorsPlayer {
      *
      * @param record This player's win/loss/draw record for the training session
      *               game.
-     * @return The data to send to the next training session game.
+     * @return The data to send to the next training session game. This data is
+     * shared between all players of this player class.
      */
     Object[] trainingEnd(PlayerData.Record record) {
         return null;
