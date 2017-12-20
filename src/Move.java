@@ -66,4 +66,13 @@ public enum Move {
     public Move getCounter() {
         return values()[(this.value + 1) % values().length];
     }
+
+    /**
+     * Returns the move that this move beats.
+     *
+     * @return The move that this move beats.
+     */
+    public Move getDefeated() {
+        return values()[(this.value - 1 + values().length) % values().length];
+    }
 }
