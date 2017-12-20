@@ -5,18 +5,20 @@ public class TournamentMain {
     public static void main(String[] args) {
         TournamentManager manager = new TournamentManager();
 
+        //////// Load special players \\\\\\\\
         // manager.add(HumanPlayer.class);
 
-        // Load dummy players
-        manager.add(RandomDummy.class);
-        manager.add(RockDummy.class);
-        manager.add(PaperDummy.class);
-        manager.add(ScissorsDummy.class);
+        //////// Load dummy players \\\\\\\\
+        // manager.add(RandomDummy.class);
+        // manager.add(RockDummy.class);
+        // manager.add(PaperDummy.class);
+        // manager.add(ScissorsDummy.class);
         manager.add(PatternDummy.class);
 
-        // Load strategic players
+        //////// Load strategic players \\\\\\\\
         manager.add(FrequencyBot.class);
         manager.add(DecayingFrequencyBot.class);
+        manager.add(HistoryBot.class);
 
         manager.runTournament(NUM_ROUNDS, NUM_GAMES, true);
     }

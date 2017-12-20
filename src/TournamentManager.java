@@ -5,7 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Manages a tournament between rock-paper-scissors players.
+ * Manages a tournament between rock-paper-scissors players. Tournaments consist
+ * of round-robin play wherein every player plays a match against every other
+ * player. A match consists of a set number of games, with each game lasting a
+ * set number of rounds.
+ * <p>
+ * Victors are determined as the player with the most games won. Ties are broken
+ * by number of individual rounds won.
  */
 public class TournamentManager {
     // Number of spaces between output columns
