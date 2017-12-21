@@ -9,11 +9,12 @@ public class TournamentMain {
         // manager.add(HumanPlayer.class);
 
         //////// Load dummy players \\\\\\\\
-        // manager.add(RandomDummy.class);
-        // manager.add(RockDummy.class);
-        // manager.add(PaperDummy.class);
-        // manager.add(ScissorsDummy.class);
+        manager.add(RandomDummy.class);
+        manager.add(RockDummy.class);
+        manager.add(PaperDummy.class);
+        manager.add(ScissorsDummy.class);
         manager.add(PatternDummy.class);
+        manager.add(DeBruijnDummy.class);
 
         //////// Load strategic players \\\\\\\\
         manager.add(FrequencyBot.class);
