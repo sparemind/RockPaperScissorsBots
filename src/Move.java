@@ -75,4 +75,20 @@ public enum Move {
     public Move getDefeated() {
         return values()[(this.value - 1 + values().length) % values().length];
     }
+
+    /**
+     * Returns this move shifted by the given number of places. Positive
+     * shifting gives moves that beat "lower" moves.
+     * <p>
+     * For example, shifting ROCK by 1 will return PAPER. Shifting ROCK by 2
+     * will return SCISSORS.
+     *
+     * @param amount The number of places the new move will be shifted by.
+     * @return This move shifted by the given number of places.
+     */
+    public Move shift(int amount) {
+        int index = (this.value + amount) % values().length;
+        index = (index + values().length) % values().length;
+        return values()[index];
+    }
 }
