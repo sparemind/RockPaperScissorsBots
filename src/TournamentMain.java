@@ -20,6 +20,9 @@ public class TournamentMain {
         manager.add(FrequencyBot.class);
         manager.add(DecayingFrequencyBot.class);
         manager.add(HistoryBot.class);
+        manager.add(MarkovBot.class);
+        manager.add(ReflectiveBot.class);
+        manager.add(MetaBot.class);
 
         manager.runTournament(NUM_ROUNDS, NUM_GAMES, true);
     }
