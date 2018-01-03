@@ -8,6 +8,7 @@ public class PlayerData implements Comparable<PlayerData> {
     private Constructor<?> constructor;
     private Record roundsRecord;
     private Record gamesRecord;
+    private Rating rating;
 
     /**
      * Initializes statistics tracking for a given player and links them to this
@@ -18,6 +19,7 @@ public class PlayerData implements Comparable<PlayerData> {
     public PlayerData(Class<? extends RockPaperScissorsPlayer> player) {
         this.name = player.getName();
         this.constructor = player.getConstructors()[0];
+        this.rating = new Rating();
         resetRecords();
     }
 
@@ -46,6 +48,15 @@ public class PlayerData implements Comparable<PlayerData> {
      */
     public Record getGamesRecord() {
         return this.gamesRecord;
+    }
+
+    /**
+     * Returns the overall rating of this player.
+     *
+     * @return The overall rating of this player.
+     */
+    public Rating getRating() {
+        return PlayerData.this.rating;
     }
 
     /**

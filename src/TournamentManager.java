@@ -16,6 +16,9 @@ import java.util.Map;
 public class TournamentManager {
     // Number of spaces between output columns
     private static final int COLUMN_SPACING = 3;
+    public static final double WIN_VALUE = 1.0;
+    public static final double LOSS_VALUE = 0.0;
+    public static final double DRAW_VALUE = 0.5;
 
     private List<PlayerData> players;
     private Map<Class<? extends RockPaperScissorsPlayer>, Object[]> trainingData;
@@ -159,12 +162,15 @@ public class TournamentManager {
         if (player1RoundWins > player2RoundWins) {
             player1Data.getGamesRecord().addWin();
             player2Data.getGamesRecord().addLoss();
+            Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), WIN_VALUE, LOSS_VALUE);
         } else if (player1RoundWins < player2RoundWins) {
             player1Data.getGamesRecord().addLoss();
             player2Data.getGamesRecord().addWin();
+            Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), LOSS_VALUE, WIN_VALUE);
         } else {
             player1Data.getGamesRecord().addDraw();
             player2Data.getGamesRecord().addDraw();
+            Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), DRAW_VALUE, DRAW_VALUE);
         }
     }
 
@@ -186,7 +192,6 @@ public class TournamentManager {
         }
         nameLength += COLUMN_SPACING;
         gameLength += COLUMN_SPACING;
-        roundLength += COLUMN_SPACING;
 
         System.out.printf("%-" + nameLength + "s", "Name");
         System.out.printf("%-" + gameLength + "s", "Games Won");
@@ -261,16 +266,23 @@ public class TournamentManager {
      */
     private boolean handleDisqualifications(Object player1, Object player2, PlayerData player1Data, PlayerData player2Data) {
         if (player1 == null || player2 == null) {
+            double player1Result;
+            double player2Result;
             if (player1 == null) {
                 player1Data.getGamesRecord().addLoss();
+                player1Result = LOSS_VALUE;
             } else {
                 player1Data.getGamesRecord().addWin();
+                player1Result = WIN_VALUE;
             }
             if (player2 == null) {
                 player2Data.getGamesRecord().addLoss();
+                player2Result = LOSS_VALUE;
             } else {
                 player2Data.getGamesRecord().addWin();
+                player2Result = WIN_VALUE;
             }
+            Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), player1Result, player2Result);
             return true;
         }
         return false;
