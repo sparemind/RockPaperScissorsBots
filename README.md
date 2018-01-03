@@ -8,6 +8,7 @@ and tools for creating and testing new bots.
 ## Features ##
 
 * Running customizable round-robin tournaments between selected players
+* Training/debugging mode
 * Stat breakdown by number of games and rounds won by each bot
 * 6 dummy bots for training and tournament play
 * 6 strategic bots
@@ -17,7 +18,11 @@ and tools for creating and testing new bots.
 ## Bot Descriptions ##
 
 ### Dummy bots: ###
-* **RandomDummy** -- Always plays random moves.
+These bots don't try to win with any intelligence,
+and just play simple, exploitable strategies.
+By succeeding against these bots, competitive bots
+can gain an overall advantage in the tournament.
+* **RandomDummy** -- Always plays random moves. Used as a baseline.
 * **RockDummy** -- Always plays rock.
 * **PaperDummy** -- Always plays paper.
 * **ScissorsDummy** -- Always plays scissors.
@@ -25,6 +30,7 @@ and tools for creating and testing new bots.
 * **DeBruijnDummy** -- Plays moves according to a fixed de Bruijn sequence consisting of 13 difference sequences 81 moves long (de Bruijn sequences of length 4).
 
 ### Strategic bots ###
+These bots utilize single, intelligent strategies.
 * **FrequencyBot** -- Plays the counter to the opponent's most frequent move.
 * **DecayingFrequencyBot** -- Plays the counter to the opponent's most frequent move. Move frequencies decay over time so more recent moves are weighted higher
 * **HistoryBot** -- Analyzes the opponents move history to find the longest move sequence that matches the most recent move sequence. Then looks at what they played next and plays the counter to it.
@@ -68,3 +74,12 @@ PaperDummy              27/110 (24.5%)    22057/110000 (20.0%)
 ScissorsDummy           19/110 (17.2%)    22951/110000 (20.8%)
 RockDummy               17/110 (15.4%)    23391/110000 (21.2%)
 ```
+
+
+## Creating a New Bot ##
+1. Implement the `RockPaperScissorsPlayer` interface
+2. Load the player in `TournamentMain` so it is
+participating in the tournament
+
+The `Move` class contains several helper methods
+available for all bots to use.
