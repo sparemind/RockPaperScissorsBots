@@ -11,7 +11,7 @@ import java.util.Map;
  * against what the opponent chose, and applies the best.
  */
 public class MetaBot extends RockPaperScissorsPlayer {
-    private static final int SEARCH_DEPTH = 100;
+    private static final int SEARCH_DEPTH = 1000;
     private static final double DECAY = 0.9;
     private static final double CHANGE = 0.1;
 
