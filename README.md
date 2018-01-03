@@ -77,7 +77,7 @@ RockDummy               17/110 (15.4%)    23391/110000 (21.2%)
 
 
 ## Creating a New Bot ##
-1. Implement the `RockPaperScissorsPlayer` interface
+1. Extend the `RockPaperScissorsPlayer` class and implement the `makeMove()` method.
 2. Load the player in `TournamentMain` so it is
 participating in the tournament
 
