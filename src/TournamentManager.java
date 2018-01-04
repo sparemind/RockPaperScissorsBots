@@ -194,6 +194,8 @@ public class TournamentManager {
             player2Data.getGamesRecord().addDraw();
             Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), Rating.DRAW_VALUE, Rating.DRAW_VALUE);
         }
+        player1Data.updateNemesis(player2Data.getName(), player2RoundWins);
+        player2Data.updateNemesis(player1Data.getName(), player1RoundWins);
     }
 
     /**
@@ -207,25 +209,30 @@ public class TournamentManager {
         int nameLength = "Name".length();
         int gameLength = "Games Won".length();
         int roundLength = "Rounds Won".length();
+        int nemesisLength = "Nemesis".length();
         for (PlayerData playerData : this.players) {
             nameLength = Math.max(nameLength, playerData.getName().length());
             gameLength = Math.max(gameLength, playerData.getGamesRecord().toString().length());
             roundLength = Math.max(roundLength, playerData.getRoundsRecord().toString().length());
+            nemesisLength = Math.max(nemesisLength, playerData.getNemesis().toString().length());
         }
         nameLength += COLUMN_SPACING;
         gameLength += COLUMN_SPACING;
+        roundLength += COLUMN_SPACING;
 
         System.out.printf("%-" + nameLength + "s", "Name");
         System.out.printf("%-" + gameLength + "s", "Games Won");
-        System.out.println("Rounds Won");
-        for (int i = 0; i < nameLength + gameLength + roundLength; i++) {
+        System.out.printf("%-" + roundLength + "s", "Rounds Won");
+        System.out.println("Nemesis");
+        for (int i = 0; i < nameLength + gameLength + roundLength + nameLength; i++) {
             System.out.print("=");
         }
         System.out.println();
         for (PlayerData playerData : this.players) {
             System.out.printf("%-" + nameLength + "s", playerData.getName());
             System.out.printf("%-" + gameLength + "s", playerData.getGamesRecord());
-            System.out.println(playerData.getRoundsRecord());
+            System.out.printf("%-" + roundLength + "s", playerData.getRoundsRecord());
+            System.out.println(playerData.getNemesis());
         }
     }
 

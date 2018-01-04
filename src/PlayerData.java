@@ -1,4 +1,6 @@
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Holds the data for a single player in the tournament.
@@ -9,6 +11,8 @@ public class PlayerData implements Comparable<PlayerData> {
     private Record roundsRecord;
     private Record gamesRecord;
     private Rating rating;
+    private Map<String, Integer> nemeses;
+    private String nemesis;
 
     /**
      * Initializes statistics tracking for a given player and links them to this
@@ -19,8 +23,10 @@ public class PlayerData implements Comparable<PlayerData> {
     public PlayerData(Class<? extends RockPaperScissorsPlayer> player) {
         this.name = player.getName();
         this.constructor = player.getConstructors()[0];
-        this.rating = new Rating();
         resetRecords();
+        this.rating = new Rating();
+        this.nemeses = new HashMap<>();
+        this.nemesis = null;
     }
 
     /**
@@ -57,6 +63,31 @@ public class PlayerData implements Comparable<PlayerData> {
      */
     public Rating getRating() {
         return PlayerData.this.rating;
+    }
+
+    /**
+     * Updates the nemesis tracker of this player. A player's nemesis is the
+     * player who they've lost the most rounds to.
+     *
+     * @param playerName The name of the player.
+     * @param losses     The number of rounds lost to the given player.
+     */
+    public void updateNemesis(String playerName, int losses) {
+        if (!this.nemeses.containsKey(playerName)) {
+            this.nemeses.put(playerName, 0);
+        }
+        this.nemeses.put(playerName, this.nemeses.get(playerName) + losses);
+        if (this.nemesis == null || this.nemeses.get(playerName) > this.nemeses.get(this.nemesis)) {
+            this.nemesis = playerName;
+        }
+    }
+
+    /**
+     * Returns the nemesis of this player. A player's nemesis is the player who
+     * they've lost the most rounds to.
+     */
+    public String getNemesis() {
+        return this.nemesis;
     }
 
     /**
