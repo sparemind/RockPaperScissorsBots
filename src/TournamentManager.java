@@ -16,9 +16,8 @@ import java.util.Map;
 public class TournamentManager {
     // Number of spaces between output columns
     private static final int COLUMN_SPACING = 3;
-    public static final double WIN_VALUE = 1.0;
-    public static final double LOSS_VALUE = 0.0;
-    public static final double DRAW_VALUE = 0.5;
+    // Percentage that tournament completion updates will be done in
+    public static final double COMPLETION_PERCENT_UPDATE = 0.1;
 
     private List<PlayerData> players;
     private Map<Class<? extends RockPaperScissorsPlayer>, Object[]> trainingData;
@@ -68,6 +67,18 @@ public class TournamentManager {
         System.out.println("\t" + this.players.size() + " competitors");
         System.out.println();
 
+        // Total number of games that will be played
+        int totalGames = 0;
+        for (int i = 1; i <= this.players.size() - 1; i++) {
+            totalGames += i;
+        }
+        totalGames *= games;
+        // Tracks tournament completion percentage
+        double gamePerPercent = 1.0 / totalGames;
+        double percentDone = 0.0;
+        double percentDoneShown = 0.0;
+        System.out.print("Tournament Progress: 0%");
+
         // Have every player play a match against every other player
         for (int i = 0; i < this.players.size(); i++) {
             for (int j = i; j < this.players.size(); j++) {
@@ -76,10 +87,21 @@ public class TournamentManager {
                     // Play the given number of games
                     for (int game = 0; game < games; game++) {
                         playGame(this.players.get(i), this.players.get(j), rounds, training);
+
+                        // Update tournament completion percentage
+                        percentDone += gamePerPercent;
+                        while (percentDoneShown < percentDone) {
+                            percentDoneShown += COMPLETION_PERCENT_UPDATE;
+                            if (percentDoneShown <= 1.0) {
+                                System.out.printf(" %.0f%%", percentDoneShown * 100);
+                            }
+                        }
                     }
                 }
             }
         }
+        System.out.println();
+        System.out.println();
 
         printRankings();
     }
@@ -162,15 +184,15 @@ public class TournamentManager {
         if (player1RoundWins > player2RoundWins) {
             player1Data.getGamesRecord().addWin();
             player2Data.getGamesRecord().addLoss();
-            Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), WIN_VALUE, LOSS_VALUE);
+            Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), Rating.WIN_VALUE, Rating.LOSS_VALUE);
         } else if (player1RoundWins < player2RoundWins) {
             player1Data.getGamesRecord().addLoss();
             player2Data.getGamesRecord().addWin();
-            Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), LOSS_VALUE, WIN_VALUE);
+            Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), Rating.LOSS_VALUE, Rating.WIN_VALUE);
         } else {
             player1Data.getGamesRecord().addDraw();
             player2Data.getGamesRecord().addDraw();
-            Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), DRAW_VALUE, DRAW_VALUE);
+            Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), Rating.DRAW_VALUE, Rating.DRAW_VALUE);
         }
     }
 
@@ -270,17 +292,17 @@ public class TournamentManager {
             double player2Result;
             if (player1 == null) {
                 player1Data.getGamesRecord().addLoss();
-                player1Result = LOSS_VALUE;
+                player1Result = Rating.LOSS_VALUE;
             } else {
                 player1Data.getGamesRecord().addWin();
-                player1Result = WIN_VALUE;
+                player1Result = Rating.WIN_VALUE;
             }
             if (player2 == null) {
                 player2Data.getGamesRecord().addLoss();
-                player2Result = LOSS_VALUE;
+                player2Result = Rating.LOSS_VALUE;
             } else {
                 player2Data.getGamesRecord().addWin();
-                player2Result = WIN_VALUE;
+                player2Result = Rating.WIN_VALUE;
             }
             Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), player1Result, player2Result);
             return true;

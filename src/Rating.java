@@ -5,6 +5,10 @@ public class Rating {
     public static final double INITIAL_RATING = 1000;
     public static final double K_FACTOR = 32;
 
+    public static final double WIN_VALUE = 1.0;
+    public static final double LOSS_VALUE = 0.0;
+    public static final double DRAW_VALUE = 0.5;
+
     private double rating;
 
     /**
