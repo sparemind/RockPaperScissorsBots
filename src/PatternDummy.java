@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Creates a random pattern of moves before the game begins, then plays it
+ * Creates a random pattern of moves before the game begins, then plays is
  * repeatably for the entirety of the game.
  */
 public class PatternDummy extends RockPaperScissorsPlayer {
