@@ -96,15 +96,23 @@ public class PlayerData implements Comparable<PlayerData> {
     /**
      * Returns the nemesis of this player. A player's nemesis is the player who
      * they've lost the most rounds to.
+     *
+     * @return The name of this player's nemesis. If no nemesis exists, returns
+     * "N/A".
      */
     public String getNemesis() {
-        return this.nemesis;
+        if (this.nemesis == null) {
+            return "N/A";
+        } else {
+            return this.nemesis;
+        }
     }
 
     /**
      * Returns the round win/total records of this player's nemesis.
      *
-     * @return The round win/total records for this player's nemesis.
+     * @return The round win/total records for this player's nemesis. Null if
+     * there is no nemesis.
      */
     public Record getNemesisRecord() {
         if (this.nemesis == null) {
@@ -138,8 +146,12 @@ public class PlayerData implements Comparable<PlayerData> {
         stats.put("Name", getName());
         stats.put("Games Won", this.gamesRecord.toString());
         stats.put("Rounds Won", this.roundsRecord.toString());
-        stats.put("Nemesis", this.nemesis);
-        stats.put("Rounds Lost to Nemesis", getNemesisRecord().percent());
+        stats.put("Nemesis", getNemesis());
+        if (getNemesisRecord() == null) {
+            stats.put("Rounds Lost to Nemesis", "N/A");
+        } else {
+            stats.put("Rounds Lost to Nemesis", getNemesisRecord().percent());
+        }
 
         return stats;
     }
