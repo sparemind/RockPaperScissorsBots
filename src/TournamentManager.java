@@ -208,38 +208,52 @@ public class TournamentManager {
      */
     private void printRankings() {
         Collections.sort(this.players);
-        int nameLength = "Name".length();
-        int gameLength = "Games Won".length();
-        int roundLength = "Rounds Won".length();
-        int nemesisLength = "Nemesis".length();
-        int nemesisLossesLength = "Rounds Lost to Nemesis".length();
-        for (PlayerData playerData : this.players) {
-            nameLength = Math.max(nameLength, playerData.getName().length());
-            gameLength = Math.max(gameLength, playerData.getGamesRecord().toString().length());
-            roundLength = Math.max(roundLength, playerData.getRoundsRecord().toString().length());
-            nemesisLength = Math.max(nemesisLength, playerData.getNemesis().length());
-            nemesisLossesLength = Math.max(nemesisLossesLength, playerData.getNemesisRecord().toString().length());
-        }
-        nameLength += COLUMN_SPACING;
-        gameLength += COLUMN_SPACING;
-        roundLength += COLUMN_SPACING;
-        nemesisLength += COLUMN_SPACING;
 
-        System.out.printf("%-" + nameLength + "s", "Name");
-        System.out.printf("%-" + gameLength + "s", "Games Won");
-        System.out.printf("%-" + roundLength + "s", "Rounds Won");
-        System.out.printf("%-" + nemesisLength + "s", "Nemesis");
-        System.out.println("Rounds Lost to Nemesis");
-        for (int i = 0; i < nameLength + gameLength + roundLength + nameLength + nemesisLength + nemesisLossesLength; i++) {
+        // Get the stats of all players
+        List<Map<String, String>> stats = new ArrayList<>();
+        for (PlayerData playerData : this.players) {
+            stats.add(playerData.getStats());
+        }
+
+        // Get the names of all stats and the width of each stat column
+        List<String> columnNames = new ArrayList<>();
+        List<Integer> columnNameLength = new ArrayList<>();
+        for (String columnName : stats.get(0).keySet()) {
+            columnNames.add(columnName);
+
+            int longest = columnName.length();
+            for (Map<String, String> playerStats : stats) {
+                longest = Math.max(longest, playerStats.get(columnName).length());
+            }
+            columnNameLength.add(longest + COLUMN_SPACING);
+        }
+
+        // Get the total width of the stats table
+        int totalLength = 0;
+        for (int length : columnNameLength) {
+            totalLength += length;
+        }
+        // Account for fencepost problem
+        totalLength -= COLUMN_SPACING;
+
+        // Print column names
+        for (int i = 0; i < columnNames.size(); i++) {
+            System.out.printf("%-" + columnNameLength.get(i) + "s", columnNames.get(i));
+        }
+        System.out.println();
+
+        // Print column header separator bar
+        for (int i = 0; i < totalLength; i++) {
             System.out.print("=");
         }
         System.out.println();
-        for (PlayerData playerData : this.players) {
-            System.out.printf("%-" + nameLength + "s", playerData.getName());
-            System.out.printf("%-" + gameLength + "s", playerData.getGamesRecord());
-            System.out.printf("%-" + roundLength + "s", playerData.getRoundsRecord());
-            System.out.printf("%-" + nameLength + "s", playerData.getNemesis());
-            System.out.println(playerData.getNemesisRecord().percent() + "%");
+
+        // Print stats for each player
+        for (Map<String, String> playerStats : stats) {
+            for (int i = 0; i < columnNames.size(); i++) {
+                System.out.printf("%-" + columnNameLength.get(i) + "s", playerStats.get(columnNames.get(i)));
+            }
+            System.out.println();
         }
     }
 

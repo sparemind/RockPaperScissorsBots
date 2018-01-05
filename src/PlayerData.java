@@ -1,5 +1,6 @@
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -124,6 +125,26 @@ public class PlayerData implements Comparable<PlayerData> {
     }
 
     /**
+     * Returns a collection of stats about this player.
+     *
+     * @return A collection of stats about this player consisting of: Name,
+     * number of games and rounds won, nemesis, number of rounds lost to
+     * nemesis. The key is the name of the stat and the value is its string
+     * representation.
+     */
+    public Map<String, String> getStats() {
+        Map<String, String> stats = new LinkedHashMap<>();
+
+        stats.put("Name", getName());
+        stats.put("Games Won", this.gamesRecord.toString());
+        stats.put("Rounds Won", this.roundsRecord.toString());
+        stats.put("Nemesis", this.nemesis);
+        stats.put("Rounds Lost to Nemesis", getNemesisRecord().percent());
+
+        return stats;
+    }
+
+    /**
      * Creates a new instance of the player whose data is being stored.
      *
      * @return A new instance of the player whose data is being stored.
@@ -230,12 +251,13 @@ public class PlayerData implements Comparable<PlayerData> {
         /**
          * Returns the percent of wins to 1 decimal place.
          *
-         * @return A string of the percent of wins (to 1 decimal place).
+         * @return A string of the percent of wins (to 1 decimal place),
+         * including the percent sign.
          */
         public String percent() {
             double percent = 100.0 * this.wins / this.total;
 
-            return String.format("%.1f", percent);
+            return String.format("%.1f%%", percent);
         }
     }
 }
