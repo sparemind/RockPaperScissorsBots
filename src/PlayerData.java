@@ -11,7 +11,7 @@ public class PlayerData implements Comparable<PlayerData> {
     private Record roundsRecord;
     private Record gamesRecord;
     private Rating rating;
-    private Map<String, Integer> nemeses;
+    private Map<String, Record> nemeses;
     private String nemesis;
 
     /**
@@ -25,8 +25,6 @@ public class PlayerData implements Comparable<PlayerData> {
         this.constructor = player.getConstructors()[0];
         resetRecords();
         this.rating = new Rating();
-        this.nemeses = new HashMap<>();
-        this.nemesis = null;
     }
 
     /**
@@ -71,14 +69,26 @@ public class PlayerData implements Comparable<PlayerData> {
      *
      * @param playerName The name of the player.
      * @param losses     The number of rounds lost to the given player.
+     * @param total      The total number of rounds played played against the
+     *                   given player.
      */
-    public void updateNemesis(String playerName, int losses) {
+    public void updateNemesis(String playerName, int losses, int total) {
         if (!this.nemeses.containsKey(playerName)) {
-            this.nemeses.put(playerName, 0);
+            this.nemeses.put(playerName, new Record());
         }
-        this.nemeses.put(playerName, this.nemeses.get(playerName) + losses);
-        if (this.nemesis == null || this.nemeses.get(playerName) > this.nemeses.get(this.nemesis)) {
+        // Add wins for the nemesis
+        Record opponentRecord = this.nemeses.get(playerName);
+        opponentRecord.wins += losses;
+        opponentRecord.total += total;
+        if (this.nemesis == null) {
             this.nemesis = playerName;
+        } else {
+            Record nemesisRecord = this.nemeses.get(this.nemesis);
+            double opponentWins = (double) opponentRecord.wins / opponentRecord.total;
+            double nemesisWins = (double) nemesisRecord.wins / nemesisRecord.total;
+            if (opponentWins > nemesisWins) {
+                this.nemesis = playerName;
+            }
         }
     }
 
@@ -91,11 +101,26 @@ public class PlayerData implements Comparable<PlayerData> {
     }
 
     /**
-     * Resets all of this player's win/loss/draw totals for rounds and games
+     * Returns the round win/total records of this player's nemesis.
+     *
+     * @return The round win/total records for this player's nemesis.
+     */
+    public Record getNemesisRecord() {
+        if (this.nemesis == null) {
+            return null;
+        }
+        return this.nemeses.get(this.nemesis);
+    }
+
+    /**
+     * Resets all of this player's win/loss/draw totals for rounds and games, as
+     * well as the player's nemesis tracker.
      */
     public void resetRecords() {
         this.roundsRecord = new Record();
         this.gamesRecord = new Record();
+        this.nemeses = new HashMap<>();
+        this.nemesis = null;
     }
 
     /**
@@ -192,9 +217,6 @@ public class PlayerData implements Comparable<PlayerData> {
          */
         @Override
         public String toString() {
-            double percent = 100.0 * this.wins / this.total;
-            percent = (int) (10.0 * percent) / 10.0;
-
             int length = ("" + this.total).length();
             String wins = "" + this.wins;
             while (wins.length() < length) {
@@ -202,7 +224,18 @@ public class PlayerData implements Comparable<PlayerData> {
             }
             String fraction = wins + "/" + this.total;
 
-            return fraction + " (" + percent + "%)";
+            return fraction + " (" + percent() + "%)";
+        }
+
+        /**
+         * Returns the percent of wins to 1 decimal place.
+         *
+         * @return A string of the percent of wins (to 1 decimal place).
+         */
+        public String percent() {
+            double percent = 100.0 * this.wins / this.total;
+
+            return String.format("%.1f", percent);
         }
     }
 }

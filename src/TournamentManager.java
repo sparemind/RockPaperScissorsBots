@@ -194,15 +194,17 @@ public class TournamentManager {
             player2Data.getGamesRecord().addDraw();
             Rating.updateRatings(player1Data.getRating(), player2Data.getRating(), Rating.DRAW_VALUE, Rating.DRAW_VALUE);
         }
-        player1Data.updateNemesis(player2Data.getName(), player2RoundWins);
-        player2Data.updateNemesis(player1Data.getName(), player1RoundWins);
+        player1Data.updateNemesis(player2Data.getName(), player2RoundWins, rounds);
+        player2Data.updateNemesis(player1Data.getName(), player1RoundWins, rounds);
     }
 
     /**
      * Prints player rankings in column form, displaying the number of games and
      * rounds won for each player as a fraction and percentage. Players are
      * ordered in descending order determined first by number of games won, then
-     * by number of rounds won, then alphabetically by name.
+     * by number of rounds won, then alphabetically by name. The nemesis of each
+     * player is additionally shown, this being the player each player has lost
+     * the most rounds to.
      */
     private void printRankings() {
         Collections.sort(this.players);
@@ -210,21 +212,25 @@ public class TournamentManager {
         int gameLength = "Games Won".length();
         int roundLength = "Rounds Won".length();
         int nemesisLength = "Nemesis".length();
+        int nemesisLossesLength = "Rounds Lost to Nemesis".length();
         for (PlayerData playerData : this.players) {
             nameLength = Math.max(nameLength, playerData.getName().length());
             gameLength = Math.max(gameLength, playerData.getGamesRecord().toString().length());
             roundLength = Math.max(roundLength, playerData.getRoundsRecord().toString().length());
-            nemesisLength = Math.max(nemesisLength, playerData.getNemesis().toString().length());
+            nemesisLength = Math.max(nemesisLength, playerData.getNemesis().length());
+            nemesisLossesLength = Math.max(nemesisLossesLength, playerData.getNemesisRecord().toString().length());
         }
         nameLength += COLUMN_SPACING;
         gameLength += COLUMN_SPACING;
         roundLength += COLUMN_SPACING;
+        nemesisLength += COLUMN_SPACING;
 
         System.out.printf("%-" + nameLength + "s", "Name");
         System.out.printf("%-" + gameLength + "s", "Games Won");
         System.out.printf("%-" + roundLength + "s", "Rounds Won");
-        System.out.println("Nemesis");
-        for (int i = 0; i < nameLength + gameLength + roundLength + nameLength; i++) {
+        System.out.printf("%-" + nemesisLength + "s", "Nemesis");
+        System.out.println("Rounds Lost to Nemesis");
+        for (int i = 0; i < nameLength + gameLength + roundLength + nameLength + nemesisLength + nemesisLossesLength; i++) {
             System.out.print("=");
         }
         System.out.println();
@@ -232,7 +238,8 @@ public class TournamentManager {
             System.out.printf("%-" + nameLength + "s", playerData.getName());
             System.out.printf("%-" + gameLength + "s", playerData.getGamesRecord());
             System.out.printf("%-" + roundLength + "s", playerData.getRoundsRecord());
-            System.out.println(playerData.getNemesis());
+            System.out.printf("%-" + nameLength + "s", playerData.getNemesis());
+            System.out.println(playerData.getNemesisRecord().percent() + "%");
         }
     }
 
