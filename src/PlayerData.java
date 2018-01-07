@@ -257,7 +257,7 @@ public class PlayerData implements Comparable<PlayerData> {
             }
             String fraction = wins + "/" + this.total;
 
-            return fraction + " (" + percent() + "%)";
+            return fraction + " (" + percent() + ")";
         }
 
         /**
