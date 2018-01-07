@@ -23,6 +23,8 @@ public class TournamentMain {
         manager.add(MarkovBot.class);
         manager.add(ReflectiveBot.class);
         manager.add(MetaBot.class);
+        manager.add(BiasBot.class);
+        manager.add(FlatBot.class);
 
         manager.runTournament(NUM_ROUNDS, NUM_GAMES, true);
     }

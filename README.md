@@ -10,15 +10,16 @@ and tools for creating and testing new bots.
 * Running customizable round-robin tournaments between selected players
 * Training/debugging mode
 * Stat breakdown by number of games and rounds won by each bot
+* Nemesis tracking
 * 6 dummy bots for training and tournament play
-* 6 strategic bots
+* 8 strategic bots
 * A user interface for a human to compete
 
 
 ## Bot Descriptions ##
 
-### Dummy bots: ###
-These bots don't try to win with any intelligence,
+### Dummy bots ###
+These bots don't try to win with any intelligence
 and just play simple, exploitable strategies.
 By succeeding against these bots, competitive bots
 can gain an overall advantage in the tournament.
@@ -37,7 +38,8 @@ These bots utilize single, intelligent strategies.
 * **MarkovBot** -- Tracks the opponent's previous moves as a Markov model, predicting what their most likely next move is based on what patterns they've played most frequently in the past and what moves they've most recently played.
 * **ReflectiveBot** -- Same as HistoryBot, but also runs the same history analysis on its own move history to consider what an opponent would play if they are also doing history analysis. Keeps track of how normal history analysis or second guessing its own history would have performed against what the opponent chose, and uses the best.
 * **MetaBot** -- Same as HistoryBot, but also keeps track of how different "shifts" to its chosen move would have performed against what the opponent chose, and applies the best.
-
+* **BiasBot** -- Plays the counter to a random move previously made by the opponent, thereby gaining an advantage over any player with a bias in their move frequency distribution.
+* **FlatBot** -- Chooses moves randomly, but with a bias towards moves chosen less frequently, ultimately attempting to have a perfectly flat move frequency distribution.
 
 ## Tournament Format ##
 
@@ -59,20 +61,22 @@ Playing tournament with:
 	10 game long matches
 	12 competitors
 
-Name                   Games Won         Rounds Won
-=================================================================
-MetaBot                 98/110 (89.0%)    71182/110000 (64.7%)
-MarkovBot               80/110 (72.7%)    66241/110000 (60.2%)
-ReflectiveBot           77/110 (70.0%)    41584/110000 (37.8%)
-HistoryBot              71/110 (64.5%)    64761/110000 (58.8%)
-DeBruijnDummy           65/110 (59.0%)    37446/110000 (34.0%)
-RandomDummy             55/110 (50.0%)    36995/110000 (33.6%)
-DecayingFrequencyBot    53/110 (48.1%)    59759/110000 (54.3%)
-FrequencyBot            42/110 (38.1%)    53029/110000 (48.2%)
-PatternDummy            39/110 (35.4%)    28247/110000 (25.6%)
-PaperDummy              27/110 (24.5%)    22057/110000 (20.0%)
-ScissorsDummy           19/110 (17.2%)    22951/110000 (20.8%)
-RockDummy               17/110 (15.4%)    23391/110000 (21.2%)
+Tournament Progress: 0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100%
+
+Name                   Games Won          Rounds Won               Nemesis                Rounds Lost to Nemesis
+================================================================================================================
+MetaBot                 99/110 (90.0%%)    71142/110000 (64.7%%)   MarkovBot              33.7%
+MarkovBot               86/110 (78.2%%)    66264/110000 (60.2%%)   ReflectiveBot          33.3%
+ReflectiveBot           78/110 (70.9%%)    41876/110000 (38.1%%)   MetaBot                68.3%
+DeBruijnDummy           70/110 (63.6%%)    37569/110000 (34.2%%)   MetaBot                38.9%
+HistoryBot              69/110 (62.7%%)    64703/110000 (58.8%%)   ReflectiveBot          65.8%
+RandomDummy             55/110 (50.0%%)    36721/110000 (33.4%%)   MetaBot                33.3%
+DecayingFrequencyBot    51/110 (46.4%%)    59420/110000 (54.0%%)   HistoryBot             48.0%
+FrequencyBot            44/110 (40.0%%)    52830/110000 (48.0%%)   DecayingFrequencyBot   69.0%
+PatternDummy            29/110 (26.4%%)    23965/110000 (21.8%%)   HistoryBot             99.1%
+PaperDummy              28/110 (25.5%%)    23487/110000 (21.4%%)   ScissorsDummy          100.0%
+ScissorsDummy           21/110 (19.1%%)    23170/110000 (21.1%%)   RockDummy              100.0%
+RockDummy               17/110 (15.5%%)    22637/110000 (20.6%%)   PaperDummy             100.0%
 ```
 
 
